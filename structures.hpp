@@ -76,12 +76,14 @@ using ListeActeurs = Liste<Acteur>;
 class Affichable {
 public:
 	virtual void afficherSur(ostream& os) const = 0;
+	virtual void afficherCourtSur(ostream& os) const = 0;
 	virtual ~Affichable() = default;
 };
 
 class Item : public Affichable {
 public:
 	void afficherSur(ostream& os) const override;
+	void afficherCourtSur(ostream& os) const override;
 	void lireDe(istream& is);
 
 	string titre;
@@ -92,6 +94,8 @@ class Film : virtual public Item
 {
 public:
 	void afficherSur(ostream& os) const override;
+	void afficherCourtSur(ostream& os) const override;
+	void afficherCourt(ostream& os) const;
 	void afficherSpecifiqueSur(ostream& os) const;  // Affiche la parite de cette classe sans afficher la base virtuelle.
 
 	string realisateur; // (on suppose qu'il n'y a qu'un réalisateur).
@@ -105,6 +109,8 @@ public:
 	Livre() = default;
 	explicit Livre(istream& is);
 	void afficherSur(ostream& os) const override;
+	void afficherCourtSur(ostream& os) const override;
+	void afficherCourt(ostream& os) const;
 	void afficherSpecifiqueSur(ostream& os) const;
 	void lireDe(istream& is);
 
@@ -117,6 +123,7 @@ public:
 	FilmLivre(const Film& film, const Livre& livre) : Item(film), Film(film), Livre(livre) { }
 
 	void afficherSur(ostream& os) const override;
+	void afficherCourtSur(ostream& os) const override;
 };
 
 struct Acteur

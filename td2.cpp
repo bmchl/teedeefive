@@ -1,4 +1,4 @@
-// Solutionnaire du TD4 INF1015 hiver 2022
+﻿// Solutionnaire du TD4 INF1015 hiver 2022
 // Par Francois-R.Boyer@PolyMtl.ca
 
 #pragma region "Includes"//{
@@ -219,6 +219,11 @@ void Item::afficherSur(ostream& os) const
 	os << "Titre: " << titre << "  Année:" << anneeSortie << endl;
 }
 
+void Item::afficherCourtSur(ostream& os) const
+{
+	os << titre;
+}
+
 void Film::afficherSpecifiqueSur(ostream& os) const
 {
 	os << "  Réalisateur: " << realisateur << endl;
@@ -234,6 +239,18 @@ void Film::afficherSur(ostream& os) const
 	Film::afficherSpecifiqueSur(os);
 }
 
+void Film::afficherCourt(ostream& os) const
+{
+	os << ", par " << realisateur;
+}
+
+void Film::afficherCourtSur(ostream& os) const
+{
+	Item::afficherCourtSur(os);
+	Film::afficherCourt(os);
+}
+
+
 void Livre::afficherSpecifiqueSur(ostream& os) const
 {
 	os << "  Auteur: " << auteur << endl;
@@ -246,6 +263,17 @@ void Livre::afficherSur(ostream& os) const
 	Livre::afficherSpecifiqueSur(os);
 }
 
+void Livre::afficherCourt(ostream& os) const
+{
+	os << ", de " << auteur;
+}
+
+void Livre::afficherCourtSur(ostream& os) const
+{
+	Item::afficherCourtSur(os);
+	Livre::afficherCourt(os);
+}
+
 void FilmLivre::afficherSur(ostream& os) const
 {
 	Item::afficherSur(os);
@@ -254,6 +282,13 @@ void FilmLivre::afficherSur(ostream& os) const
 	Film::afficherSpecifiqueSur(os);
 	os << "Livre:" << endl;
 	Livre::afficherSpecifiqueSur(os);
+}
+
+void FilmLivre::afficherCourtSur(ostream& os) const
+{
+	Item::afficherCourtSur(os);
+	Film::afficherCourt(os);
+	Livre::afficherCourt(os);
 }
 
 //]
@@ -271,13 +306,14 @@ void Livre::lireDe(istream& is)
 Livre::Livre(istream& is) {
 	lireDe(is);
 }
-
-void afficherListeItems(span<unique_ptr<Item>> listeItems)
+template <typename T>
+void afficherListeItems(T& listeItems)
 {
 	static const string ligneDeSeparation = "\033[32m────────────────────────────────────────\033[0m\n";
 	cout << ligneDeSeparation;
 	for (auto&& item : listeItems) {
-		cout << *item << ligneDeSeparation;
+		item->afficherCourtSur(cout);
+		cout << endl;
 	}
 }
 
