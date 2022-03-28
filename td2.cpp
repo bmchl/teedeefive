@@ -13,6 +13,7 @@
 #include <limits>
 #include <algorithm>
 #include <sstream>
+#include <forward_list>
 #include "cppitertools/range.hpp"
 #include "cppitertools/enumerate.hpp"
 #include "gsl/span"
@@ -382,5 +383,25 @@ int main(int argc, char* argv[])
 	
 	items.push_back(make_unique<FilmLivre>(dynamic_cast<Film&>(*items[4]), dynamic_cast<Livre&>(*items[9])));  // On ne demandait pas de faire une recherche; serait direct avec la matière du TD5.
 
-	afficherListeItems(items);
+	forward_list<unique_ptr<Item>> forwardBiblio;
+
+	for (int i = items.size() -1; i > -1; i--)
+	{
+		forwardBiblio.push_front(items[i]);
+	}
+
+	forward_list<unique_ptr<Item>> forwardBiblioReverse;
+
+	for (auto& item : forwardBiblio)
+	{
+		// TODO: cast type correctly, they're being casted as Items instead of Films/Livres/FilmLivre
+		forwardBiblioReverse.push_front(make_unique<Item>(*item));
+	}
+	cout << "gonna print forwardlist now" << endl;
+
+	afficherListeItems(forwardBiblio);
+
+	cout << "gonna print reversed forwardlist now" << endl;
+
+	afficherListeItems(forwardBiblioReverse);
 }
