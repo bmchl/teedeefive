@@ -16,7 +16,7 @@
 #include <forward_list>
 #include "cppitertools/range.hpp"
 #include "cppitertools/enumerate.hpp"
-#include "gsl/span"
+#include "gsl/span" 
 
 #if __has_include("gtest/gtest.h")
 #include "gtest/gtest.h"
@@ -320,7 +320,7 @@ void afficherListeItems(T& listeItems)
 
 #pragma region "Exemples de tests unitaires"//{
 #ifdef TEST
-// Pas demandés dans ce TD mais sert d'exemple.
+//Pas demandés dans ce TD mais sert d'exemple.
 
 TEST(tests_ListeFilms, tests_simples) {
 	ListeFilms li;
@@ -365,12 +365,12 @@ int main(int argc, char* argv[])
 
 	static const string ligneDeSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
 
-	vector<unique_ptr<Item>> items;
+	vector<shared_ptr<Item>> items;
 	
 	{
 		ListeFilms listeFilms = creerListe("films.bin");
 		for (auto&& film : listeFilms.enSpan())
-			items.push_back(unique_ptr<Item>(film));  // On transert la possession.
+			items.push_back(shared_ptr<Item>(film));  // On transert la possession.
 		listeFilms.detruire();
 	}
 
@@ -378,30 +378,52 @@ int main(int argc, char* argv[])
 		ifstream fichier("livres.txt");
 		fichier.exceptions(ios::failbit);  // Pas demandé mais permet de savoir s'il y a une erreur de lecture.
 		while (!ws(fichier).eof())
-			items.push_back(make_unique<Livre>(fichier));
+			items.push_back(make_shared<Livre>(fichier));
 	}
 	
-	items.push_back(make_unique<FilmLivre>(dynamic_cast<Film&>(*items[4]), dynamic_cast<Livre&>(*items[9])));  // On ne demandait pas de faire une recherche; serait direct avec la matière du TD5.
+	items.push_back(make_shared<FilmLivre>(dynamic_cast<Film&>(*items[4]), dynamic_cast<Livre&>(*items[9])));  // On ne demandait pas de faire une recherche; serait direct avec la matière du TD5.
 
-	forward_list<unique_ptr<Item>> forwardBiblio;
+	//forward_list<unique_ptr<Item>> forwardBiblio;
 
-	for (int i = items.size() -1; i > -1; i--)
+	//for (int i = items.size() -1; i >= 0; i--)
+	//{
+	//	forwardBiblio.push_front(items[i]);
+	//}
+
+	////forward_list<unique_ptr<Item>> forwardBiblioReverse;
+
+	////for (auto& item : forwardBiblio)
+	////{
+	//	// TODO: cast type correctly, they're being casted as Items instead of Films/Livres/FilmLivre
+	//	//forwardBiblioReverse.push_front(make_unique<Item>(*item));
+	////}
+	//cout << "gonna print forwardlist now" << endl;
+
+	//afficherListeItems(forwardBiblio);
+	
+	cout << ligneDeSeparation << endl;
+
+	forward_list<Item*> forwardBiblio;
+	
+	for (auto& item: items)
 	{
-		forwardBiblio.push_front(items[i]);
+		forwardBiblio.push_front(item.get());
 	}
+	forwardBiblio.reverse();
 
-	forward_list<unique_ptr<Item>> forwardBiblioReverse;
-
-	for (auto& item : forwardBiblio)
-	{
-		// TODO: cast type correctly, they're being casted as Items instead of Films/Livres/FilmLivre
-		forwardBiblioReverse.push_front(make_unique<Item>(*item));
-	}
-	cout << "gonna print forwardlist now" << endl;
+	cout << "L'ordre original" << endl;
 
 	afficherListeItems(forwardBiblio);
 
-	cout << "gonna print reversed forwardlist now" << endl;
+	cout << ligneDeSeparation << endl;
+	forward_list<Item*> forwardBiblioReverse;
 
+	for (auto& ite : items)
+	{
+		forwardBiblioReverse.push_front(ite.get());
+	}
+
+	cout << "L'ordre contraire" << endl;
 	afficherListeItems(forwardBiblioReverse);
+
 }
