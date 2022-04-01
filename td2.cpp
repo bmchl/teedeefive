@@ -403,27 +403,86 @@ int main(int argc, char* argv[])
 	
 	cout << ligneDeSeparation << endl;
 
-	forward_list<Item*> forwardBiblio;
+	forward_list<shared_ptr<Item>> forwardBiblio;
 	
 	for (auto& item: items)
 	{
-		forwardBiblio.push_front(item.get());
+		forwardBiblio.push_front(item);
 	}
 	forwardBiblio.reverse();
 
-	cout << "L'ordre original" << endl;
+	cout << "1.1 L'ordre original" << endl;
 
 	afficherListeItems(forwardBiblio);
 
 	cout << ligneDeSeparation << endl;
-	forward_list<Item*> forwardBiblioReverse;
+	
+	forward_list<shared_ptr<Item>> forwardBiblioReverse;
 
-	for (auto& ite : items)
+	for (auto& item : forwardBiblio)
 	{
-		forwardBiblioReverse.push_front(ite.get());
+		forwardBiblioReverse.push_front(item);
 	}
 
-	cout << "L'ordre contraire" << endl;
+	cout << "1.2 L'ordre contraire" << endl;
+	
 	afficherListeItems(forwardBiblioReverse);
 
+
+	cout << ligneDeSeparation << endl;
+
+	cout << "1.3 L'ordre original copié \n" << endl;
+
+	forward_list<shared_ptr<Item>> forwardBiblioCopie;
+	auto iter = forwardBiblioCopie.before_begin();
+	for (auto& item: forwardBiblio)
+	{
+		iter = forwardBiblioCopie.emplace_after(iter, item);
+	}
+	afficherListeItems(forwardBiblioCopie);
+
+	int taille = 0;
+	for (auto& item : forwardBiblio)
+	{
+		taille++;
+	}
+	cout << taille << endl;
+
+	vector<shared_ptr<Item>> itemsCopie(taille, make_shared<Item>());
+	afficherListeItems(itemsCopie);
+	int i = taille;
+	for (auto& item : forwardBiblioCopie)
+	{
+		if (i > -1)
+		{ 
+			itemsCopie[i] = item;
+			i--;
+		}
+	}
+	//int i = 0;
+	/*for (int j = 0; j < forwardBiblio.end(); j++)*/
+	/*while (i != forwardBiblio.end())
+	{
+		
+	}*/
+	/*forward_list<Item*>::iterator ptr = forwardBiblio.begin();
+	for (ptr = forwardBiblio.begin(); ptr < forwardBiblio.end(); ptr++)
+	{
+		newVectorItems.push_back(make_shared<Item>(*ptr));
+	}
+
+	for(int i = 0; i < size); i++) 
+	{
+		newVectorItems.push_back(next(forwardBiblio.begin(), size));
+	}
+		afficherListeItems(newVectorItems);*/
+
+	//for(newVectorItems = forwardBiblio.end(); newVectorItems != )
+
+	cout << ligneDeSeparation << endl;
+
+	cout << "1.4 L'ordre contraire" << endl;
+
 }
+
+
