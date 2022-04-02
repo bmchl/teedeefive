@@ -382,57 +382,31 @@ int main(int argc, char* argv[])
 	}
 	
 	items.push_back(make_shared<FilmLivre>(dynamic_cast<Film&>(*items[4]), dynamic_cast<Livre&>(*items[9])));  // On ne demandait pas de faire une recherche; serait direct avec la matière du TD5.
-
-	//forward_list<unique_ptr<Item>> forwardBiblio;
-
-	//for (int i = items.size() -1; i >= 0; i--)
-	//{
-	//	forwardBiblio.push_front(items[i]);
-	//}
-
-	////forward_list<unique_ptr<Item>> forwardBiblioReverse;
-
-	////for (auto& item : forwardBiblio)
-	////{
-	//	// TODO: cast type correctly, they're being casted as Items instead of Films/Livres/FilmLivre
-	//	//forwardBiblioReverse.push_front(make_unique<Item>(*item));
-	////}
-	//cout << "gonna print forwardlist now" << endl;
-
-	//afficherListeItems(forwardBiblio);
 	
 	cout << ligneDeSeparation << endl;
 
+	cout << "1.1 Une forward_list dans l'ordre original" << endl;
 	forward_list<shared_ptr<Item>> forwardBiblio;
-	
 	for (auto& item: items)
 	{
 		forwardBiblio.push_front(item);
 	}
 	forwardBiblio.reverse();
-
-	cout << "1.1 L'ordre original" << endl;
-
 	afficherListeItems(forwardBiblio);
 
 	cout << ligneDeSeparation << endl;
-	
-	forward_list<shared_ptr<Item>> forwardBiblioReverse;
 
+	cout << "1.2 Une forward_list dans l'ordre inverse" << endl;
+	forward_list<shared_ptr<Item>> forwardBiblioReverse;
 	for (auto& item : forwardBiblio)
 	{
 		forwardBiblioReverse.push_front(item);
 	}
-
-	cout << "1.2 L'ordre contraire" << endl;
-	
 	afficherListeItems(forwardBiblioReverse);
-
 
 	cout << ligneDeSeparation << endl;
 
-	cout << "1.3 L'ordre original copié \n" << endl;
-
+	cout << "1.3 Une copie de la forward_list dans l'ordre original \n" << endl;
 	forward_list<shared_ptr<Item>> forwardBiblioCopie;
 	auto iter = forwardBiblioCopie.before_begin();
 	for (auto& item: forwardBiblio)
@@ -441,47 +415,35 @@ int main(int argc, char* argv[])
 	}
 	afficherListeItems(forwardBiblioCopie);
 
+	cout << ligneDeSeparation << endl;
+
+	cout << "1.4 Un vector des items dans l'ordre inverse \n" << endl;
 	int taille = 0;
 	for (auto& item : forwardBiblio)
 	{
 		taille++;
-	}
-	cout << taille << endl;
-
+	} // Ordre de complexité: O(n) * O(1) = O(n)
 	vector<shared_ptr<Item>> itemsCopie(taille, make_shared<Item>());
+	int i = taille - 1;
+	for (auto&& item : forwardBiblioCopie)
+	{
+		itemsCopie[i] = item;
+		i--;
+	} // Ordre de complexité: O(n) * 2 * O(1) = O(n)
+	// L'ordre de complexité au total de ces opérations est de O(n) + O(n), soit O(n).
 	afficherListeItems(itemsCopie);
-	int i = taille;
-	for (auto& item : forwardBiblioCopie)
-	{
-		if (i > -1)
-		{ 
-			itemsCopie[i] = item;
-			i--;
-		}
-	}
-	//int i = 0;
-	/*for (int j = 0; j < forwardBiblio.end(); j++)*/
-	/*while (i != forwardBiblio.end())
-	{
-		
-	}*/
-	/*forward_list<Item*>::iterator ptr = forwardBiblio.begin();
-	for (ptr = forwardBiblio.begin(); ptr < forwardBiblio.end(); ptr++)
-	{
-		newVectorItems.push_back(make_shared<Item>(*ptr));
-	}
-
-	for(int i = 0; i < size); i++) 
-	{
-		newVectorItems.push_back(next(forwardBiblio.begin(), size));
-	}
-		afficherListeItems(newVectorItems);*/
-
-	//for(newVectorItems = forwardBiblio.end(); newVectorItems != )
 
 	cout << ligneDeSeparation << endl;
 
-	cout << "1.4 L'ordre contraire" << endl;
+	cout << "1.5 Les acteurs du premier film Alien" << endl;
+	auto film = dynamic_cast<Film&>(*forwardBiblio.front().get());
+	for (auto&& acteur : film.acteurs)
+	{
+		cout << *acteur;
+	}
+	
+	cout << ligneDeSeparation << endl;
+
 
 }
 

@@ -6,6 +6,7 @@
 #include <memory>
 #include <functional>
 #include <cassert>
+#include <iterator>
 #include "gsl/span"
 using gsl::span;
 using namespace std;  // On le permet, mais j'ai écrit mon .hpp sans, avant de le permettre dans l'énoncé.
@@ -36,7 +37,6 @@ private:
 	int capacite = 0, nElements = 0;
 	Film** elements = nullptr; // Pointeur vers un tableau de Film*, chaque Film* pointant vers un Film.
 };
-
 template <typename T>
 class Liste {
 public:
@@ -57,10 +57,21 @@ public:
 	Liste(Liste<T>&&) = default;  // Pas nécessaire, mais puisque c'est si simpler avec unique_ptr...
 	Liste<T>& operator=(Liste<T>&&) = default;  // Nécessaire dans mon cas pour l'initialisation dans lireFilm.
 
+
+
 	void ajouter(shared_ptr<T> element)
 	{
 		assert(nElements < capacite);  // Comme dans le TD1, on ne demande pas la réallocation pour ListeActeurs...
 		elements[nElements++] = move(element);
+	}
+
+	shared_ptr<T>* begin()
+	{
+		return elements.get();
+	}
+	shared_ptr<T>* end()
+	{
+		return begin() + nElements;
 	}
 
 	shared_ptr<T>& operator[] (int index) { return elements[index]; }
