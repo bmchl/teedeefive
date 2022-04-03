@@ -16,7 +16,8 @@
 #include <forward_list>
 #include "cppitertools/range.hpp"
 #include "cppitertools/enumerate.hpp"
-#include "gsl/span" 
+#include "gsl/span"
+#include <set>
 
 #if __has_include("gtest/gtest.h")
 #include "gtest/gtest.h"
@@ -444,7 +445,30 @@ int main(int argc, char* argv[])
 	
 	cout << ligneDeSeparation << endl;
 
+	cout << "2.1 Les items en ordre alphabetique" << endl;
 
+	set < Item*, decltype([](Item* firstItem, Item* SecondItem) {return firstItem->titre < SecondItem->titre; }) > orderedElements ;
+	
+	for (auto& item : items) 
+	{
+		orderedElements.emplace(item.get());
+	}
+	afficherListeItems(orderedElements);
+
+	cout << ligneDeSeparation << endl;
+
+	cout << "2.2 Item par titre" << endl;
+
+	unordered_map <string, Item*> elementWanted;
+
+	for (auto& item : items) 
+	{
+		elementWanted[item->titre] = item.get();
+	}
+
+	cout << *elementWanted["The Hobbit"] << endl;
+
+	cout << ligneDeSeparation << endl;
 }
 
 
