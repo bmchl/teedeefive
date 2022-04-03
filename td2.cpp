@@ -1,7 +1,4 @@
-﻿// Solutionnaire du TD4 INF1015 hiver 2022
-// Par Francois-R.Boyer@PolyMtl.ca
-
-#pragma region "Includes"//{
+﻿#pragma region "Includes"//{
 #define _CRT_SECURE_NO_WARNINGS // On permet d'utiliser les fonctions de copies de chaînes qui sont considérées non sécuritaires.
 
 #include "structures.hpp"      // Structures de données pour la collection de films en mémoire.
@@ -14,6 +11,7 @@
 #include <algorithm>
 #include <sstream>
 #include <forward_list>
+#include <numeric>
 #include "cppitertools/range.hpp"
 #include "cppitertools/enumerate.hpp"
 #include "gsl/span"
@@ -447,26 +445,41 @@ int main(int argc, char* argv[])
 
 	cout << "2.1 Les items en ordre alphabetique" << endl;
 
-	set < Item*, decltype([](Item* firstItem, Item* SecondItem) {return firstItem->titre < SecondItem->titre; }) > orderedElements ;
+	set < Item*, decltype([](Item* firstItem, Item* SecondItem) {return firstItem->titre < SecondItem->titre; }) > itemsAlpha ;
 	
 	for (auto& item : items) 
 	{
-		orderedElements.emplace(item.get());
+		itemsAlpha.emplace(item.get());
 	}
-	afficherListeItems(orderedElements);
+	afficherListeItems(itemsAlpha);
 
 	cout << ligneDeSeparation << endl;
 
 	cout << "2.2 Item par titre" << endl;
 
-	unordered_map <string, Item*> elementWanted;
+	unordered_map <string, Item*> itemVoulu;
 
 	for (auto& item : items) 
 	{
-		elementWanted[item->titre] = item.get();
+		itemVoulu[item->titre] = item.get();
 	}
 
-	cout << *elementWanted["The Hobbit"] << endl;
+	cout << *itemVoulu["The Hobbit"] << endl;
+
+	cout << ligneDeSeparation << endl;
+
+	cout << "3.1 Copie des films en vector par algorithme" << endl;
+	vector<shared_ptr<Item>> filmsCopieAlgo;
+	copy_if(forwardBiblio.begin(), forwardBiblio.end(), back_inserter(filmsCopieAlgo), [](auto& item) { return item->estFilm() == true; });
+	afficherListeItems(filmsCopieAlgo);
+
+	cout << ligneDeSeparation << endl;
+
+	cout << "3.2 Somme des recettes des films" << endl;
+
+	int recetteTotale = accumulate(filmsCopieAlgo.begin(), filmsCopieAlgo.end(), 0, [](int a, auto& b) { return a + dynamic_cast<Film&>(*b.get()).recette ; });
+
+	cout << "Resultat: $" << recetteTotale << " M" << endl;
 
 	cout << ligneDeSeparation << endl;
 }

@@ -96,7 +96,7 @@ public:
 	void afficherSur(ostream& os) const override;
 	void afficherCourtSur(ostream& os) const override;
 	void lireDe(istream& is);
-
+	virtual bool estFilm() { return false; };
 	string titre;
 	int anneeSortie = 0;
 };
@@ -108,7 +108,7 @@ public:
 	void afficherCourtSur(ostream& os) const override;
 	void afficherCourt(ostream& os) const;
 	void afficherSpecifiqueSur(ostream& os) const;  // Affiche la parite de cette classe sans afficher la base virtuelle.
-
+	bool estFilm() override { return true; };
 	string realisateur; // (on suppose qu'il n'y a qu'un réalisateur).
 	int recette = 0; // Recette globale du film en millions de dollars
 	ListeActeurs acteurs;
